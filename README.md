@@ -143,6 +143,26 @@ CREATE TABLE comments (
 );
 ```
 
+## Undoing Migrations
+
+The free version of Flyway does unfortuately not provide an easy undo option, but it is not so hard to do this manually. however, when doing so, I think it is important to keep the change as part of the migration sequence instead of manually working on it directly in for example PhpMyAdmin.
+
+So this is what the migration in V5 is supposed to illustrate.
+This step will
+
+- Drop the `role_permissions` junction table
+- Drop the `permissions` table
+- Drop the `roles` table
+- Remove the `role` column from the users table
+
+Add this file, peform the migration again with the command `docker compose run --rm flyway migrate`. Status will now be like this:
+
+<center><img src="./images/after-undo.png" alt="Flyway info after undo" width="50%"/></center>
+
+And you can verify that the `role` column has disappeared from the `users` table in phpmyadmin:
+
+<center><img src="./images/users-table-after-undo.png" alt="phpmyadmin after undo" width="50%"/></center>
+
 ## Troubleshooting
 
 ### Migrations won't run
@@ -160,7 +180,7 @@ CREATE TABLE comments (
 
 If we have had an error in the SQL - for example like I did when I incluused the PostgreSQL syntax "ALTER TABLE users DROP COLUMN IF EXISTS role;" on my MySQL database. That did not go down well...
 
-After having done something like that, you will have to fix the schema manually before running migraions again. Use this command:
+After having done something like that, you will have to fix the schema manually before running migrations again. Use this command:
 
 ```bash
 docker compose run --rm flyway repair
@@ -171,6 +191,12 @@ docker compose run --rm flyway repair
 ```bash
 docker compose down -v
 docker compose up
+```
+
+or
+
+```bash
+docker compose run --rm flyway clean
 ```
 
 ## Best Practices
