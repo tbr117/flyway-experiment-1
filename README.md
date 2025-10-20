@@ -10,7 +10,9 @@ flyway1/
 ├── sql/                   # Flyway migration scripts
 │   ├── V1__Create_users_table.sql
 │   ├── V2__Create_posts_table.sql
-│   └── V3__Add_user_roles_and_permissions.sql
+│   ├── V3__Add_user_roles_and_permissions.sql
+│   ├── V4__[Available for future migrations]
+│   └── V5__Remove_user_roles_and_permissions.sql
 └── README.md
 ```
 
@@ -68,6 +70,19 @@ Flyway migrations follow a naming convention: `V{version}__{description}.sql`
 - Creates `roles`, `permissions`, and `role_permissions` tables
 - Sets up a basic RBAC (Role-Based Access Control) system
 - Assigns roles to existing users
+
+### V4: Available for Future Migrations
+
+- This is just another table for the experiments
+- Use this slot to add new features or modifications as you wish
+
+### V5: Remove user roles and permissions
+
+- This step is to demonstrates rollback - or how to undo a previous migration
+- Drops `role_permissions`, `permissions`, and `roles` tables
+- Removes the `role` column from `users` table
+- Note that we still have the comment table.
+- Also note, this is a forward migration that undoes V3 - not a true "undo" command
 
 ## Flyway Commands
 
@@ -140,6 +155,16 @@ CREATE TABLE comments (
 
 - Wait for MySQL to be fully ready (healthcheck should help)
 - Check database credentials in `docker-compose.yaml`
+
+### Repair database
+
+If we have had an error in the SQL - for example like I did when I incluused the PostgreSQL syntax "ALTER TABLE users DROP COLUMN IF EXISTS role;" on my MySQL database. That did not go down well...
+
+After having done something like that, you will have to fix the schema manually before running migraions again. Use this command:
+
+```bash
+docker compose run --rm flyway repair
+```
 
 ### Reset everything
 
