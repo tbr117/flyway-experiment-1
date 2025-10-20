@@ -30,7 +30,7 @@ services:
       FLYWAY_URL: jdbc:mysql://db:3306/mydatabase
       FLYWAY_USER: flyway
       FLYWAY_PASSWORD: flywaypw
-      FLYWAY_CLEAN_DISABLED: false. # Allow clean for development purposes
+      FLYWAY_CLEAN_DISABLED: false # Allow clean for development purposes
     volumes:
       - ./sql:/flyway/sql
     command: -connectRetries=60 info
