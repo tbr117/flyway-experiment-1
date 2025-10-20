@@ -5,6 +5,9 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: rootpassword
       MYSQL_DATABASE: mydatabase
+      MYSQL_USER: flyway
+      MYSQL_PASSWORD: flywaypw
+    command: --default-authentication-plugin=mysql_native_password
     ports:
       - "3306:3306"
     healthcheck:
@@ -25,11 +28,11 @@ services:
     container_name: flyway
     environment:
       FLYWAY_URL: jdbc:mysql://db:3306/mydatabase
-      FLYWAY_USER: root
-      FLYWAY_PASSWORD: rootpassword
+      FLYWAY_USER: flyway
+      FLYWAY_PASSWORD: flywaypw
     volumes:
       - ./sql:/flyway/sql
-    command: -connectRetries=60 flyway info
+    command: -connectRetries=60 info
     # command: -connectRetries=60 migrate
     depends_on:
       db:
